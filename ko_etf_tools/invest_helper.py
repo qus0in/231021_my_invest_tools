@@ -11,8 +11,8 @@ class InvestHelper(KoETF):
         join = lambda *x: '|'.join(x)
         # 3년 이하 단기채 및 금리 제외
         ms.query(not_contains(join('단기', '머니마켓', '3년', '금리')), inplace=True)
-        # 배당, 커버드콜 전략 및 은행 리츠 제외
-        ms.query(not_contains(join('배당', '커버드콜', '은행', '리츠')), inplace=True)
+        # 배당, 커버드콜 전략 및 은행 리츠 ESG 제외
+        ms.query(not_contains(join('배당', '커버드콜', '은행', '리츠', 'ESG')), inplace=True)
         # 채권 혼합, 종합채권 제외
         ms.query(not_contains(join('혼합', '종합', 'TRF')), inplace=True)
         # 만기매칭형 제외
@@ -21,7 +21,7 @@ class InvestHelper(KoETF):
         ms['groupName'] = ms.itemname.str.upper()
 
         kwds = ['(^\S* )','선물','\(.*\)','TR$','액티브', 'PLUS','플러스',
-                '동일가중','투자(?!등급)', 'ESG', 'SRI', 'KRX', 'KIS',
+                '동일가중','투자(?!등급)', 'SRI', 'KRX', 'KIS',
                 'ISELECT', 'FN', 'SOLACTIVE', 'MSCI', 'INDXX', 'KAP',
                 'ENHANCED', '스트립']
 
