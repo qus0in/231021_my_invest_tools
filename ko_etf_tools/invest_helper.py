@@ -21,7 +21,7 @@ class InvestHelper(KoETF):
 
         ms['groupName'] = ms.itemname.str.upper()
 
-        kwds = ['(^\S* )','선물','\(.*\)','TR$','액티브', 'PLUS','플러스',
+        kwds = ['(^\S* )','선물','\(.*\)','TR','액티브', 'PLUS','플러스',
                 '동일가중','투자(?!등급)', 'SRI', 'KRX', 'KIS',
                 'ISELECT', 'FN', 'SOLACTIVE', 'INDXX', 'KAP',
                 'ENHANCED', '스트립']
