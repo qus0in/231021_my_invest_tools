@@ -9,8 +9,8 @@ class InvestHelper(KoETF):
         ms = cls.get_etf_list()
         not_contains = lambda x: f'not itemname.str.contains("{x}")'
         join = lambda *x: '|'.join(x)
-        # 3년 이하 단기채 및 금리 제외
-        ms.query(not_contains(join('단기', '머니마켓', '3년', '금리')), inplace=True)
+        # 30년 미만 국채 및 단기채 및 금리 제외
+        ms.query(not_contains(join('단기', '머니마켓', '3년', '금리', '10년', '중장기')), inplace=True)
         # 배당, 커버드콜 전략 및 은행 리츠 ESG MSCI BBIG 메타버스 제외
         ms.query(not_contains(join('배당', '커버드콜', '은행', '리츠', 'ESG',
                                    'MSCI', 'BBIG', '메타버스')), inplace=True)
