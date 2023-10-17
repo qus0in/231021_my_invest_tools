@@ -1,12 +1,9 @@
 from setuptools import setup, find_packages
-import package_name # TODO : package_name 수정
+import ko_etf_tools
 
 setup(
-    # TODO : package_name 수정
-    name='package_name',
-    # TODO : package_name 수정
-    version=package_name.__version__, 
-    # TODO : install_requires 목록 채우기
-    install_requires=[],
+    name='ko_etf_tools',
+    version=ko_etf_tools.__version__, 
+    install_requires=['requests', 'pandas'],
     packages=find_packages(),
 )
