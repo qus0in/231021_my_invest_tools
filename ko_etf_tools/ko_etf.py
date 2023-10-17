@@ -1,19 +1,39 @@
-import requests  # requests 라이브러리를 사용하여 HTTP 요청을 처리합니다.
-import pandas as pd  # pandas 라이브러리를 사용하여 데이터를 처리합니다.
+import requests
+import pandas as pd
+import ast
 
 class KoETF:
-    NAVER_FINANCE_DOMAIN = 'https://finance.naver.com'  # Naver 금융의 도메인 URL
-
     @classmethod
     def get_etf_list(cls):
-        # Naver 금융 ETF 목록 API의 URL을 생성합니다.
-        URL = cls.NAVER_FINANCE_DOMAIN + '/api/sise/etfItemList.nhn'
+        """Naver 금융에서 ETF 목록을 가져와 DataFrame으로 반환"""
+        URL = 'https://finance.naver.com/api/sise/etfItemList.nhn'
         
-        # HTTP GET 요청을 보내고 응답을 받습니다.
+        # HTTP 요청 및 응답 처리
         response = requests.get(URL)
+        data = response.json()['result']['etfItemList']
         
-        # 응답에서 JSON 데이터를 추출하고, 필요한 ETF 목록 정보만을 가져옵니다.
-        data = response.json().get('result').get('etfItemList')
-        
-        # 데이터를 Pandas DataFrame으로 변환하고, 'itemcode'를 인덱스로 설정합니다.
+        # DataFrame 변환 및 인덱스 설정
         return pd.DataFrame(data).set_index('itemcode')
+
+    @classmethod
+    def get_price(cls, symbol, startTime='19000101', endTime='20991231', timeframe='day'):
+        """Naver Finance에서 주어진 심볼의 가격 정보를 가져와 DataFrame으로 반환"""
+        URL = 'https://api.finance.naver.com/siseJson.naver'
+        params = {
+            'symbol': symbol,
+            'requestType': 1,
+            'startTime': startTime,
+            'endTime': endTime,
+            'timeframe': timeframe
+        }
+        
+        # HTTP 요청 및 응답 처리
+        response = requests.get(URL, params)
+        
+        # 응답 데이터 정리 및 DataFrame 변환
+        data = ast.literal_eval(response.text.replace('\n', ''))
+        df = pd.DataFrame(data[1:], columns=data[0])
+        
+        # 날짜 형식 변환 및 인덱스 설정
+        df['날짜'] = pd.to_datetime(df['날짜'], format='%Y%m%d')
+        return df.set_index('날짜')
