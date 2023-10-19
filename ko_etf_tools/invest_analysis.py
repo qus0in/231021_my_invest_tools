@@ -1,9 +1,10 @@
+from ko_etf_tools import InvestMarket
 # 설치
 import numpy as np
 import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
 
-class InvestAnalysis:
+class InvestAnalysis(InvestMarket):
     PERIODS=(2, 3, 5, 8, 13, 21)
 
     @classmethod
@@ -47,19 +48,19 @@ class InvestAnalysis:
 
     @classmethod
     def get_ranking(cls,
-                    screen: pd.DataFrame,
-                    prices: dict,
+                    screener: pd.DataFrame,
                     budget: int,
                     risk_limit: float=0.015,
                     enter_num: int=4):
         
+        prices = cls.get_prices(screener)
+        corr_matrix = cls.get_corr_matrix(prices, max(cls.PERIODS))
+        data_groups = cls.get_data_groups(corr_matrix, 10)
+
         get_p = lambda x: {k:v for k, v in prices}.get(x)
         risk = lambda x: min(1, round(risk_limit / cls.get_aatr(get_p(x)), 3))
         record = lambda x: (x, screen.loc[x].itemname,
                             cls.get_score(get_p(x)), risk(x),)
-
-        corr_matrix = cls.get_corr_matrix(prices, max(cls.PERIODS))
-        data_groups = cls.get_data_groups(corr_matrix, 10)
 
         data = [sorted([record(itemcode) for itemcode in d],
                     key=lambda x: x[2])[-1] for d in data_groups]
