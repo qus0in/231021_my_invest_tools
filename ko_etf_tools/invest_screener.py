@@ -93,5 +93,6 @@ class InvestScreener(KoETF, DynamoDB):
         df = pd.DataFrame({
             k:{k2:v2.get('S') for k2, v2 in v.get('M').items()}
             for k, v in data.items()})
-        return df.astype({'groupMarketSum':'int'})\
+        self.data = df.astype({'groupMarketSum':'int'})\
                 .sort_values('groupMarketSum', ascending=False)
+        return self.data
