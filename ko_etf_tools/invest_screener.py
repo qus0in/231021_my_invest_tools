@@ -4,6 +4,12 @@ from ko_etf_tools import CommonUtils as utils
 import pandas as pd
 
 class InvestScreener(KoETF, DynamoDB):
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        print('put_screener : {self.put_screener()}')
+        self.get_recent_screener()
+
     
     @classmethod
     def get_screener(cls):
@@ -87,7 +93,7 @@ class InvestScreener(KoETF, DynamoDB):
 
 
     def get_recent_screener(self):
-        args = 'dt = :dt', {':dt': {'S': Utils.now_str}}
+        args = 'dt = :dt', {':dt': {'S': utils.now_str}}
         data = self.query(*args).json()\
             .get('Items')[0].get('screener').get('M')
         df = pd.DataFrame({
