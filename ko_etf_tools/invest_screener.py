@@ -1,8 +1,9 @@
-import datetime
-import pandas as pd
 from ko_etf_tools import KoETF, DynamoDB
+from ko_etf_tools import CommonUtils as utils
+# 설치
+import pandas as pd
 
-class InvestHelper(KoETF):
+class InvestScreener(KoETF, DynamoDB):
     
     @classmethod
     def get_screener(cls):
@@ -76,27 +77,18 @@ class InvestHelper(KoETF):
             .sort_values('groupMarketSum', ascending=False)\
             [['itemcode', 'itemname', 'groupMarketSum', 'category']]\
             .set_index('itemcode')
-    
-
-    @classmethod
-    @property
-    def now_str(cls):
-        return datetime.datetime.utcnow()\
-                .strftime('%Y-%m-%d')
 
 
-    @classmethod
-    def put_screener(cls, db:DynamoDB):
+    def put_screener(self):
         items = {k:dict(M={k2:dict(S=str(v2)) for k2, v2 in v.items()})
-            for k, v in InvestHelper.get_screener().to_dict().items()}
-        return db.put_item(
-            dict(dt={'S':cls.now_str}, screener={'M':items})).json() or 'success'
-    
-    
-    @classmethod
-    def get_recent_screener(cls, db:DynamoDB):
-        args = 'dt = :dt', {':dt': {'S': cls.now_str}}
-        data = db.query(*args).json()\
+            for k, v in self.get_screener().to_dict().items()}
+        return self.put_item(
+            dict(dt={'S':utils.now_str}, screener={'M':items})).json() or 'success'
+
+
+    def get_recent_screener(self):
+        args = 'dt = :dt', {':dt': {'S': Utils.now_str}}
+        data = self.query(*args).json()\
             .get('Items')[0].get('screener').get('M')
         df = pd.DataFrame({
             k:{k2:v2.get('S') for k2, v2 in v.get('M').items()}

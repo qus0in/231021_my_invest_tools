@@ -1,6 +1,8 @@
+# 내장
+import ast
+# 설치
 import requests
 import pandas as pd
-import ast
 
 class KoETF:
     @classmethod
