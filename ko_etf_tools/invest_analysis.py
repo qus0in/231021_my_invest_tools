@@ -8,7 +8,7 @@ class InvestAnalysis:
 
     @classmethod
     def get_tr(cls, price: pd.DataFrame):
-        
+
         concat = lambda x, y: pd.concat([x, y], axis=1)
         th = concat(price.고가, price.종가.shift(1)).max(axis=1)
         tl = concat(price.저가, price.종가.shift(1)).min(axis=1)
@@ -49,9 +49,9 @@ class InvestAnalysis:
     def get_ranking(cls,
                     screen: pd.DataFrame,
                     prices: dict,
-                    risk_limit: float,
                     budget: int,
-                    enter_num: int):
+                    risk_limit: float=0.015,
+                    enter_num: int=4):
         
         get_p = lambda x: {k:v for k, v in prices}.get(x)
         risk = lambda x: min(1, round(risk_limit / cls.get_aatr(get_p(x)), 3))
