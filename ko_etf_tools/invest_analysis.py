@@ -32,7 +32,17 @@ class InvestAnalysis(InvestMarket):
 
         return pd.DataFrame(data)\
                 .tail(row_num).dropna(axis=1).corr()
-    
+
+
+    @classmethod
+    def get_score(cls, price):
+        handler = lambda x: (x[-1] - x[0]) / x[0] * 100
+        c = price[['종가']].tail(max(cls.PERIODS) * 2)
+        scores = [c.apply(handler) / p for p
+                  in cls.PERIODS if p <= len(price)]
+        return pd.concat(scores, axis=1)\
+                .mean().round(3).iloc[-1]
+
 
     @classmethod
     def get_data_groups(cls,
