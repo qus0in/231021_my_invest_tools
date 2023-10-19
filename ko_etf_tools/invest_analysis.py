@@ -48,18 +48,18 @@ class InvestAnalysis(InvestMarket):
 
     @classmethod
     def get_ranking(cls,
-                    screener: pd.DataFrame,
+                    screener_data: pd.DataFrame,
                     budget: int,
                     risk_limit: float=0.015,
                     enter_num: int=4):
         
-        prices = cls.get_prices(screener)
+        prices = cls.get_prices(screener_data)
         corr_matrix = cls.get_corr_matrix(prices, max(cls.PERIODS))
         data_groups = cls.get_data_groups(corr_matrix, 10)
 
         get_p = lambda x: {k:v for k, v in prices}.get(x)
         risk = lambda x: min(1, round(risk_limit / cls.get_aatr(get_p(x)), 3))
-        record = lambda x: (x, screen.loc[x].itemname,
+        record = lambda x: (x, screener_data.loc[x].itemname,
                             cls.get_score(get_p(x)), risk(x),)
 
         data = [sorted([record(itemcode) for itemcode in d],
