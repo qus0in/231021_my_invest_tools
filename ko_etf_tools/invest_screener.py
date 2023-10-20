@@ -95,8 +95,11 @@ class InvestScreener(KoETF, DynamoDB):
 
     def get_recent_screener(self):
         args = 'dt = :dt', {':dt': {'S': utils.now_str}}
-        data = self.query(*args).json()\
-            .get('Items')[0].get('screener').get('M')
+        items = self.query(*args).json().get('Items')
+        if not items:
+            self.put_screener()
+            items = self.query(*args).json().get('Items')
+        data = items[0].get('screener').get('M')
         df = pd.DataFrame({
             k:{k2:v2.get('S') for k2, v2 in v.get('M').items()}
             for k, v in data.items()})
