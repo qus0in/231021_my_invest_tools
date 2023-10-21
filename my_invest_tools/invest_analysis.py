@@ -1,4 +1,4 @@
-from ko_etf_tools import InvestMarket
+from my_invest_tools import InvestMarket
 # 설치
 import numpy as np
 import pandas as pd

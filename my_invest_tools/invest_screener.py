@@ -1,5 +1,5 @@
-from ko_etf_tools import KoETF, DynamoDB
-from ko_etf_tools import CommonUtils as utils
+from my_invest_tools import KoETF, DynamoDB
+from my_invest_tools import CommonUtils as utils
 # 설치
 import pandas as pd
 
