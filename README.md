@@ -1,4 +1,4 @@
-# ko_etf_tools
+# my_invest_tools
 > ETF 투자를 위한 도구들
 
 
@@ -7,9 +7,9 @@
 
 
 ```shell
-pip install git+https://github.com/qus0in/ko_etf_tools.git -q
+pip install git+https://github.com/qus0in/my_invest_tools.git -q
 ```
 ```python
-import ko_etf_tools
-ko_etf_tools.__version__
+import my_invest_tools
+my_invest_tools.__version__
 ```
