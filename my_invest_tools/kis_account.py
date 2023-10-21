@@ -1,3 +1,4 @@
+from my_invest_tools import DynamoDB
 from my_invest_tools import CommonUtils as utils
 # 설치
 import requests
