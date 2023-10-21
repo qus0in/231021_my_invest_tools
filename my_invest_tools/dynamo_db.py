@@ -2,7 +2,7 @@ import requests
 
 class DynamoDB:
     
-    def __init__(self, API_URL, API_KEY, TABLE_NAME):
+    def __init__(self, API_URL, API_KEY, TABLE_NAME=''):
         self.API_URL = API_URL
         self.API_KEY = API_KEY
         self.TABLE_NAME = TABLE_NAME
