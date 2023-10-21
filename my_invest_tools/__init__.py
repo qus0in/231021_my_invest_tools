@@ -8,4 +8,4 @@ from .invest_analysis import InvestAnalysis
 
 from .kis_account import KISAccount
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
