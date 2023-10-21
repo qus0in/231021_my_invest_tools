@@ -1,4 +1,4 @@
-from ko_etf_tools import KoETF
+from my_invest_tools import KoETF
 # 내장
 from multiprocessing import Pool, cpu_count
 # 설치
