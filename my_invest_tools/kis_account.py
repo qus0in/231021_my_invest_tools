@@ -41,7 +41,7 @@ class KISAccount(DynamoDB):
                 token={'S': token},
                 dt={'S': utils.now_str}))
             self._kis_token = self.get_kis_token()
-        return self.kis_token
+        return self._kis_token
 
 
     def url(self, path):
