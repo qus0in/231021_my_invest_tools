@@ -35,7 +35,7 @@ class KISAccount(DynamoDB):
             self._kis_token = result.get('Items')[0].get('token').get('S')
         else:
             print(f'토큰 업데이트 ({self.kis_cano}, {utils.now_str})')
-            token = self.get_token_from_kis(self.kis_ak, self.kis_sk)
+            token = self.get_token_from_kis()
             self.put_item(dict(
                 cano={'S': self.kis_cano},
                 token={'S': token},
