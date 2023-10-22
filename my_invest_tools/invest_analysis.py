@@ -81,3 +81,18 @@ class InvestAnalysis(InvestMarket):
         return df.set_index('itemcode')\
             .sort_values('score', ascending=False)\
             .query('score > 0').head(enter_num + 1)
+
+    @classmethod
+    def get_signal(cls, ranking: pd.DataFrame, balance: pd.DataFrame, enter_num: int):
+        df = ranking\
+            .join(balance, how='outer')\
+            .sort_values('score', ascending=False)\
+            .fillna(0)
+        df['itemname'] = df.apply(lambda x: x.itemname or x.상품명, axis=1)
+        cut_score = df.score[min(len(ranking)-1,enter_num-1)]
+        df.query(f'(enter == 0) or (score >= {cut_score})', inplace=True)
+        df.rename(columns={'평가금액': 'current'}, inplace=True)
+        result = df[['itemname', 'enter', 'current']]
+        exit = result.query('enter == 0 and current > 0')
+        enter = result.query('enter > 0 and current == 0')
+        return exit, enter
