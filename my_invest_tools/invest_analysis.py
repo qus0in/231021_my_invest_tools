@@ -92,9 +92,9 @@ class InvestAnalysis(InvestMarket):
         cut_score = df.score[min(len(ranking)-1,enter_num-1)]
         df.query(f'(enter == 0) or (score >= {cut_score})', inplace=True)
         df.rename(columns={'평가금액': 'current'}, inplace=True)
-        result = df[['itemname', 'enter', 'current']]
-        exit = result.query('enter == 0 and current > 0')
-        enter = result.query('enter > 0 and current == 0')
-        exit['category'] = 'exit'
-        enter['category'] = 'enter'
-        return pd.concat([exit, enter])
+        result = df
+        exit = result.query('enter == 0 and current > 0').copy()
+        enter = result.query('enter > 0 and current == 0').copy()
+        exit['signal'] = 'exit'
+        enter['signal'] = 'enter'
+        return pd.concat([exit, enter])[['signal', 'itemname', 'enter', 'current']]
