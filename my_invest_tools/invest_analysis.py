@@ -95,4 +95,6 @@ class InvestAnalysis(InvestMarket):
         result = df[['itemname', 'enter', 'current']]
         exit = result.query('enter == 0 and current > 0')
         enter = result.query('enter > 0 and current == 0')
-        return exit, enter
+        exit['category'] = 'exit'
+        enter['category'] = 'enter'
+        return pd.concat([exit, enter])
