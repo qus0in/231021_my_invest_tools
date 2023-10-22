@@ -101,3 +101,41 @@ class KISAccount(DynamoDB):
         return self.get_account_balance_from_kis()\
             .loc[['주식', 'RP/발행어음', '예수금+CMA']]\
             .실제순자산금액.sum()
+
+
+    def get_balance_from_kis(self):
+        PATH = 'uapi/domestic-stock/v1/trading/inquire-balance'
+        response = requests.get(self.url(PATH),
+            params=dict(
+                CANO=self.kis_cano,
+                ACNT_PRDT_CD='01',
+                AFHR_FLPR_YN='N',
+                OFL_YN='',
+                INQR_DVSN='02',
+                UNPR_DVSN='01',
+                FUND_STTL_ICLD_YN='N',
+                FNCG_AMT_AUTO_RDPT_YN='N',
+                PRCS_DVSN='00',
+                CTX_AREA_FK100='',
+                CTX_AREA_NK100=''),
+            headers=self.headers(tr_id='TTTC8434R')
+        )
+        if response.status_code != 200:
+            raise Exception(f'{response.status_code}: {response.text}')
+        data = response.json().get('output1')
+        df = pd.DataFrame(data)
+        df.columns = ['상품번호', '상품명', '매매구분명',
+                      '전일매수수량', '전일매도수량', '금일매수수량', '금일매도수량',
+                      '보유수량', '주문가능수량', '매입평균가격', '매입금액', '현재가',
+                      '평가금액', '평가손익금액', '평가손익율', '평가수익율',
+                      '대출일자', '대출금액', '대주매각대금', '만기일자',
+                      '등락율', '전일대비증감', '종목증거금율명', '보증금율명', '대용가격', '주식대출단가']
+        df = df.astype({
+            '전일매수수량': int, '전일매도수량': int,
+            '금일매수수량': int, '금일매도수량': int, '보유수량': int, '주문가능수량': int,
+            '매입평균가격': float, '매입금액': int, '현재가': int,
+            '평가금액': int, '평가손익금액': int, '평가손익율': float, '평가수익율': float,
+            '대출금액': int, '대주매각대금': int, '등락율': float,
+            '전일대비증감': int, '대용가격': int, '주식대출단가': float,
+        })
+        return df.set_index('상품번호')
