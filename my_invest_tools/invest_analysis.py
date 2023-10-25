@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
 
 class InvestAnalysis(InvestMarket):
-    PERIODS=(2, 3, 5, 8, 13, 21)
+    PERIODS=(3, 5, 8, 13, 21)
 
     @classmethod
     def get_tr(cls, price: pd.DataFrame):
@@ -38,7 +38,7 @@ class InvestAnalysis(InvestMarket):
     def get_score(cls, price):
         handler = lambda x: (x[-1] - x[0]) / x[0] * 100
         c = price[['종가']].tail(max(cls.PERIODS) * 2)
-        scores = [c.apply(handler) for p
+        scores = [c.apply(handler) / p for p
                   in cls.PERIODS if p <= len(price)]
         return pd.concat(scores, axis=1)\
                 .mean().round(3).iloc[-1]
