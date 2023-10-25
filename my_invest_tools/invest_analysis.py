@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
 
 class InvestAnalysis(InvestMarket):
-    PERIODS=(3, 5, 8, 13, 21)
+    PERIODS=(2, 3, 5, 8, 13, 21)
 
     @classmethod
     def get_tr(cls, price: pd.DataFrame):
@@ -80,4 +80,4 @@ class InvestAnalysis(InvestMarket):
 
         return df.set_index('itemcode')\
             .sort_values('score', ascending=False)\
-            .query('score > 0').head(enter_num + 1)
+            .query('score > 0')
